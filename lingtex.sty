@@ -1,0 +1,224 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lingtex}[2023-09-22 Linguistics Meta-Package]
+
+\newif\iflinglm
+\newif\iflingtipa
+\lingtipafalse
+\linglmfalse
+\DeclareOption{tipa}{\lingtipatrue}
+\DeclareOption{lm}{\linglmtrue}
+\DeclareOption{times}{\linglmfalse}
+\DeclareOption*{\PackageWarning{lingtex}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
+
+%% Packages
+\RequirePackage{amsmath}
+\RequirePackage{cleveref}
+\RequirePackage{setspace}
+\RequirePackage{expl3}
+\RequirePackage{stmaryrd}
+\RequirePackage{expex}
+\RequirePackage{geometry}
+\RequirePackage{enumitem}
+\RequirePackage{iftex}
+\RequirePackage{epltxfn}
+\RequirePackage{forest}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage[
+	bibstyle=biblatex-sp-unified,
+	citestyle=sp-authoryear-comp,
+	maxcitenames=3,
+	maxbibnames=99,
+	backend=biber,
+]{biblatex}
+
+
+%%%%%
+
+% ExPex Formatting
+\lingset{%
+	aboveexskip=1.25ex,
+	belowexskip=1.5ex,
+	glstyle=wrap,
+	everyglpreamble={\itshape},
+	belowglpreambleskip=-0.2ex,
+	everygla={\itshape},
+	aboveglftskip=-0.2ex,
+	textoffset=\tabcolsep,
+	interpartskip=0.5ex,
+	glspace=!2pt plus .2em,
+	glrightskip=0pt plus .5\hsize
+}
+\gathertags % Allow forward references with expex
+
+% Tree settings
+\useforestlibrary{linguistics}
+\forestapplylibrarydefaults{linguistics}
+\forestset{
+	nice trees/.style={
+			for tree={
+					parent anchor=south,
+					child anchor=north,
+					align=center,
+					base=top,
+					inner sep=1pt,
+					l-=4ex,
+					before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
+							if content={}{
+									for parent={
+											for children={anchor=north},
+											calign=fixed edge angles,
+											calign angle=60,
+										},
+									shape=coordinate,
+									calign=fixed edge angles,
+									calign angle=60,
+								}{},
+						},
+				},
+		},
+	somewhat nice trees/.style={% needed to avoide divide by 0 errors: http://tex.stackexchange.com/q/204094/42880
+			for tree={
+					parent anchor=south,
+					child anchor=north,
+					align=center,
+					base=top,
+					inner sep=1pt,
+					l-=4ex,
+					before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
+							if content={}{
+									for parent={
+											for children={anchor=north},
+											calign=fixed edge angles,
+											calign angle=60,
+										},
+									inner sep=0pt,
+									edge path={\noexpand\path [\forestoption{edge}] (!u.parent anchor) -- (.south)\forestoption{edge label};}, %from http://tex.stackexchange.com/a/281546
+									calign=fixed edge angles,
+									calign angle=60,
+								}{},
+						},
+				},
+		}
+}
+\usetikzlibrary{positioning,arrows.meta}
+\DeclareDocumentCommand \tikzexsetup {} {%
+\tikzstyle{every picture}+=[remember picture, inner sep=0pt,
+baseline, anchor=base]}
+% arg 1: optional strut; arg 2: node name; arg 3: node content
+\DeclareDocumentCommand \ND {s m m} {%
+	\tikzifinpicture{}{\tikz}\node(#2){\IfBooleanTF{#1}{\strut}{}#3};}
+\tikzset{exarrows/.style={semithick, %fatter arrow for poster
+arrows={-{Stealth[width=0.2em,length=0.2em]}}}}
+\usetikzlibrary{
+	bbox,
+	calc,% 
+	bending,% 
+	arrows%
+}
+\tikzset{%
+	every tree node/.style={align=center,anchor=north},
+	level distance=20pt,
+	sibling distance=1.5\baselineskip,
+	>=stealth'}
+
+% Use this macro to vertically align trees when using expex
+\def\upp{\leavevmode\vadjust{\vspace{-\baselineskip}}\newline}
+
+% Itemize
+\setitemize{itemsep=0pt}
+\setlist[enumerate]{itemsep=0pt}
+
+% Fonts
+\ifPDFTeX
+	\iflinglm
+		\usepackage{lmodern}
+	\else
+		\usepackage{mathptmx}
+	\fi
+\else
+	\iflinglm
+		\usepackage[default]{fontsetup}
+	\else
+		\usepackage[no-math]{fontspec}
+		\usepackage{unicode-math}
+		\setmainfont[SizeFeatures={Size=12}]{TeX Gyre Termes}
+		\setmathfont[math-style=ISO,bold-style=ISO]{XITS Math}
+	\fi
+\fi
+
+\let\textipa\relax
+\let\ipafont\relax
+
+\RequirePackage[noipa]{OTtablx}
+
+\ifPDFTeX\else
+	\iflinglm
+		\let\ipafont\textipa
+	\else
+		\newfontfamily{\doulos}{Doulos SIL}[Scale=MatchLowercase]
+		\let\ipafont\doulos
+	\fi
+\fi
+
+% expex / unicode-math fix
+% unicode-math redefines \gla at document start, we redefine it back
+\ifPDFTeX\else
+	\let\oldgla\gla
+	\AtBeginDocument{\let\gla\oldgla}
+\fi
+
+%% Bibliography
+\DeclareSourcemap{
+	\maps[datatype=bibtex]{
+		\map{
+			\step[fieldsource=url,
+				notmatch=\regexp{wiki},
+				final=1]
+			\step[fieldset=urldate, null]
+		}
+	}
+}
+
+\AtEveryBibitem{%
+	\clearfield{note}%
+}
+
+\renewbibmacro*{doi+eprint+url}{%
+	\printfield{doi}%
+	\newunit\newblock%
+	\iftoggle{bbx:eprint}{%
+		\usebibmacro{eprint}%
+	}{}%
+	\newunit\newblock%
+	\iffieldundef{doi}{%
+		\usebibmacro{url+urldate}}%
+	{}%
+}
+
+% Page Layout
+\newgeometry{margin=1.2in}
+\AtBeginDocument{\fontsize{12}{16}\selectfont}
+\AtBeginBibliography{\normalsize}
+\onehalfspacing
+
+
+% Custom linguistics macros
+\ExplSyntaxOn
+\def\ipa#1{{\textup{\normalfont\ipafont #1}}}
+\def\phon/#1/{\ensuremath{/\text{\ipa{#1}}/}}
+\def\allo[#1]{\ensuremath{[\text{\ipa{#1}}]}}
+\def\orth#1{\ensuremath{\left\langle\text{{\orthfont #1}}\right\rangle}}
+\let\denfont\relax
+\NewDocumentCommand{\den}{ O{}m }{\ensuremath{\left\llbracket\text{\denfont #2}\right\rrbracket^{#1}}}
+\def\lex#1{\emph{#1}}
+\makeatother
+\NewDocumentCommand\lem{ mo }{
+	\IfValueTF{#2}{
+		{#1}~`#2'
+	}{
+		\lex{#1}
+	}
+}
+\ExplSyntaxOff

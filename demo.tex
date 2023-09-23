@@ -1,0 +1,80 @@
+\documentclass{article}
+
+\usepackage{csquotes}
+\usepackage[times]{lingtex}
+\usepackage{kantlipsum}
+
+\def\type#1{\textsf{#1}}
+\def\e{\type{e}}
+\def\t{\type{t}}
+\def\ann{\textbf{ann}}
+\def\bill{\textbf{bill}}
+\def\bea{\textbf{bea}}
+\def\cam{\textbf{cam}}
+\def\di{\textbf{di}}
+\def\jan{\textbf{jan}}
+\DeclareMathOperator{\seated}{\textbf{seated}}
+\DeclareMathOperator{\near}{\textbf{near}}
+\DeclareMathOperator{\sing}{\textbf{sing}}
+\DeclareMathOperator{\like}{\textbf{like}}
+
+\title{Ling\TeX}
+\author{Jackson Petty}
+\date{\today}
+
+\begin{document}
+\maketitle
+\kant[1]
+Here are some great examples:
+\ex
+Isn't this awesome?
+\xe
+\ex
+\begingl
+\gla This is a glossed example. //
+\glb This be.PRES a glossed example. //
+\glft \enquote{This is a glossed example.} //
+\endgl
+\xe
+We can also have multi-part examples:
+\pex
+\a Yay!
+\a \judge* With nicely aligned judgement markers!
+\a \judge{???} What??
+\xe
+
+How about phonology?
+\ex \label{ex:nf-ar}
+\begin{OTtableau}{2}
+	\OTsolids{1}
+	\OTtoprow [\scshape l l] {\textsc{Nonfinality},\textsc{Align-Right}}
+	\OTcandrow {\scshape l \'l} {*!,}
+	\OTcandrow [\OThand]  {\scshape \'l l} {,*}
+\end{OTtableau}
+\xe
+
+Or Syntax?
+
+\ex
+\begin{forest} nice trees,
+	[TP
+				[AdvP [Adv\\Tomorrow]]
+				[TP
+						[NP$_2$ [N$_2$\\John]]
+						[T$^\prime$
+							[T\\will]
+								[VP
+										[V\\see]
+										[NP$_1$ [N$_1$\\Mary]]
+								]
+						]
+				]
+		]
+\end{forest}
+\xe
+
+And semantics?
+\ex
+$\den{\lex{and}} = \lambda PQ.\,P \land Q: \e\t,\t \to (\e\t,\t \to \e\t,\t)$
+\xe
+\end{document}
