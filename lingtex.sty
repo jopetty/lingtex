@@ -11,33 +11,33 @@
   { 
     % Should TIPA be loaded?
     tipa .bool_set:N = \l__lingtex_tipa_bool,
-    tipa .default:n = true,
+    % tipa .default:n = true,
     tipa .initial:n = false,
     
     % Which font should be used?
     font .tl_set:N = \l__lingtex_font_tl,
-    font .default:n = times,
+    % font .default:n = times,
     font .initial:n = times,
 
     % Which package should be used for OT tableaux?
     tableaux .tl_set:N = \l__lingtex_tableaux_tl,
-    tableaux .default:n = OTtablx,
+    % tableaux .default:n = OTtablx,
     tableaux .initial:n = ,
 
     % Which package should be used for trees?
     trees .tl_set:N = \l__lingtex_trees_tl,
-    trees .default:n = forest,
+    % trees .default:n = forest,
     trees .initial:n = ,
 
     % Which package should be used for examples?
     examples .tl_set:N = \l__lingtex_examples_tl,
-    examples .default:n = expex,
+    % examples .default:n = expex,
     examples .initial:n = ,
 
-	% Should Biblatex be loaded?
-	biblatex .bool_set:N = \l__lingtex_biblatex_bool,
-	biblatex .default:n = true,
-	biblatex .initial:n = false,
+    % Should Biblatex be loaded?
+    biblatex .bool_set:N = \l__lingtex_biblatex_bool,
+    % biblatex .default:n = true,
+    biblatex .initial:n = false,
   }
 \ProcessKeyOptions [ lingtex ]
 
@@ -46,10 +46,11 @@
 \RequirePackage{amssymb}
 \RequirePackage{booktabs}
 \RequirePackage{enumitem}
-\RequirePackage{geometry}
+\RequirePackage[pass]{geometry}
 \RequirePackage{hyperref}
 \RequirePackage{cleveref}  % LoadAfter: hyperref
 \RequirePackage{iftex}
+\RequirePackage{microtype}
 \RequirePackage{setspace}
 \RequirePackage{stmaryrd}
 \RequirePackage{tabularx}
@@ -64,37 +65,128 @@
 \onehalfspacing
 
 \bool_if:NT \l__lingtex_tipa_bool
-	{ \RequirePackage{tipa} }
+  { \RequirePackage{tipa} }
+
+% gb4e redefines some commands which forest uses; 
+% we have to load forest before gb4e
+\str_case:VnF \l__lingtex_trees_tl {
+  { forest } {
+    \RequirePackage{forest}
+    \useforestlibrary{linguistics}
+    \forestapplylibrarydefaults{linguistics}
+    % \ExplSyntaxOff
+    % TikZ synax uses spaces, while ExplSyntax will elide.
+    % Temporarily turn off ExplSyntax to set TikZ options.
+    \forestset{
+      nice~trees/.style={
+        for~tree={
+          parent~anchor=south,
+          child~anchor=north,
+          align=center,
+          base=top,
+          inner~sep=1pt,
+          l-=4ex,
+          before~typesetting~nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
+            if~content={}{
+              for~parent={
+                for~children={anchor=north},
+                calign=fixed~edge~angles,
+                calign~angle=60,              
+              },
+              shape=coordinate,
+              calign=fixed~edge~angles,
+              calign~angle=60,       
+            }{},
+          },
+        },
+      },
+      somewhat~nice~trees/.style={% needed to avoide divide by 0 errors: http://tex.stackexchange.com/q/204094/42880
+        for~tree={
+          parent~anchor=south,
+          child~anchor=north,
+          align=center,
+          base=top,
+          inner~sep=1pt,
+          l-=4ex,
+          before~typesetting~nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
+            if~content={}{
+              for~parent={
+                for~children={anchor=north},
+                calign=fixed~edge~angles,
+                calign~angle=60,              
+              },
+              inner~sep=0pt,
+              edge~path={\noexpand\path~[\forestoption{edge}]~(!u.parent anchor)~--~(.south)\forestoption{edge~label};}, %from http://tex.stackexchange.com/a/281546
+              calign=fixed~edge~angles,
+              calign~angle=60,       
+            }{},
+          },
+        },
+      }
+    }
+    \ExplSyntaxOff
+      % ExplSyntax will elide spaces, but TikZ syntax uses spaces for
+      % settings. Temporarily turn off ExplSyntax to set TikZ options.
+      \usetikzlibrary{
+        bbox,
+        calc,
+        bending,
+        arrows,
+        arrows.meta,
+        positioning,
+      }
+    \ExplSyntaxOn
+    \DeclareDocumentCommand \tikzexsetup {} {%
+    \tikzstyle{every~picture}+=[remember~picture, inner~sep=0pt,
+    baseline, anchor=base]}
+    % % arg 1: optional strut; arg 2: node name; arg 3: node content
+    \DeclareDocumentCommand \ND {s m m} {%
+      \tikzifinpicture{}{\tikz}\node(#2){\IfBooleanTF{#1}{\strut}{}#3};}
+    \tikzset{exarrows/.style={semithick,  % fatter arrow for poster
+    arrows={-{Stealth[width=0.2em,length=0.2em]}}}}
+    \tikzset{
+      every~tree~node/.style={align=center,anchor=north},
+      level~distance=20pt,
+      sibling~distance=1.5\baselineskip,
+      >=stealth'}
+  }
+  { qtree } { \RequirePackage{qtree} }
+  { tikz-qtree } { \RequirePackage{tikz-qtree} }
+  { pstrees } { \RequirePackage{pstrees} }
+  {} {}
+}{
+  \PackageError{lingtex}{Unknown~trees~package~‘\l__lingtex_trees_tl’}{}
+}
 
 \str_case:VnF \l__lingtex_examples_tl {
-	{ expex } { 
-		\RequirePackage{expex}
-		\RequirePackage{epltxfn}
-		% ExPex Formatting
-		\lingset{%
-			aboveexskip=1.25ex,
-			belowexskip=1.5ex,
-			glstyle=wrap,
-			everyglpreamble={\itshape},
-			belowglpreambleskip=-0.2ex,
-			everygla={\itshape},
-			aboveglftskip=-0.2ex,
-			textoffset=\tabcolsep,
-			interpartskip=0.5ex,
-			glspace=!2pt plus .2em,
-			glrightskip=0pt plus .5\hsize
-		}
-		\gathertags % Allow forward references with expex
-	}
-	{ gb4e } { \RequirePackage{gb4e} }
-	{ linguex } { \RequirePackage{linguex} }
-	{ covington } { 
-		\RequirePackage{covington} 
-		\def\cl@chapter{\@elt {section}}
-	}
-	{} {}
+  { expex } { 
+    \RequirePackage{expex}
+    \RequirePackage{epltxfn}
+    % ExPex Formatting
+    \lingset{%
+      aboveexskip=1.25ex,
+      belowexskip=1.5ex,
+      glstyle=wrap,
+      everyglpreamble={\itshape},
+      belowglpreambleskip=-0.2ex,
+      everygla={\itshape},
+      aboveglftskip=-0.2ex,
+      textoffset=\tabcolsep,
+      interpartskip=0.5ex,
+      glspace=!2pt plus .2em,
+      glrightskip=0pt plus .5\hsize
+    }
+    \gathertags % Allow forward references with expex
+  }
+  { gb4e } { \RequirePackage{gb4e} }
+  { linguex } { \RequirePackage{linguex} }
+  { covington } { 
+    \RequirePackage{covington} 
+    \def\cl@chapter{\@elt {section}}
+  }
+  {} {}
 }{
-	\PackageError{lingtex}{Unknown examples package ‘\l__lingtex_examples_tl’}{}
+  \PackageError{lingtex}{Unknown~examples~package~‘\l__lingtex_examples_tl’}{}
 }
 
 \bool_if:NT \l__lingtex_biblatex_bool { 
@@ -134,91 +226,13 @@
   }
 }
 
-\str_case:VnF \l__lingtex_trees_tl {
-  { forest } {
-    \RequirePackage{forest}
-    \useforestlibrary{linguistics}
-    \forestapplylibrarydefaults{linguistics}
-    \forestset{
-      nice trees/.style={
-        for tree={
-          parent anchor=south,
-          child anchor=north,
-          align=center,
-          base=top,
-          inner sep=1pt,
-          l-=4ex,
-          before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
-            if content={}{
-              for parent={
-                for children={anchor=north},
-                calign=fixed edge angles,
-                calign angle=60,
-              },
-              shape=coordinate,
-              calign=fixed edge angles,
-              calign angle=60,
-            }{},
-          },
-        },
-      },
-      somewhat nice trees/.style={% needed to avoide divide by 0 errors: http://tex.stackexchange.com/q/204094/42880
-        for tree={
-          parent anchor=south,
-          child anchor=north,
-          align=center,
-          base=top,
-          inner sep=1pt,
-          l-=4ex,
-          before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
-            if content={}{
-              for parent={
-                for children={anchor=north},
-                calign=fixed edge angles,
-                calign angle=60,
-              },
-              inner sep=0pt,
-              edge path={\noexpand\path [\forestoption{edge}] (!u.parent anchor) -- (.south)\forestoption{edge label};}, %from http://tex.stackexchange.com/a/281546
-              calign=fixed edge angles,
-              calign angle=60,
-            }{},
-          },
-        },
-      }
-    }
-    \usetikzlibrary{positioning,arrows.meta}
-    \DeclareDocumentCommand \tikzexsetup {} {%
-    \tikzstyle{every picture}+=[remember picture, inner sep=0pt,
-    baseline, anchor=base]}
-    % arg 1: optional strut; arg 2: node name; arg 3: node content
-    \DeclareDocumentCommand \ND {s m m} {%
-      \tikzifinpicture{}{\tikz}\node(#2){\IfBooleanTF{#1}{\strut}{}#3};}
-    \tikzset{exarrows/.style={semithick, %fatter arrow for poster
-    arrows={-{Stealth[width=0.2em,length=0.2em]}}}}
-    \usetikzlibrary{
-      bbox,
-      % calc,% 
-      bending,% 
-      arrows%
-    }
-    \tikzset{%
-      every tree node/.style={align=center,anchor=north},
-      level distance=20pt,
-      sibling distance=1.5\baselineskip,
-      >=stealth'}
-  }
-  {} {}
-}{
-	\PackageError{lingtex}{Unknown trees package ‘\l__lingtex_trees_tl’}{}
-}
-
 % Load tableaux package
 \str_case:VnF \l__lingtex_tableaux_tl {
   { OTtablx } { \RequirePackage{OTtablx} }
   { ot-tableau } { \RequirePackage{ot-tableau} }
   {} {}
 }{
-  \PackageError{lingtex}{Unknown tableaux package ‘\l__lingtex_tableaux_tl’}{}
+  \PackageError{lingtex}{Unknown~tableaux~package~‘\l__lingtex_tableaux_tl’}{}
 }
 
 % Load fonts
@@ -232,7 +246,7 @@
     { times } { \RequirePackage{mathptmx} }
     {} {}
   }{
-    \PackageError{lingtex}{Unknown font ‘\l__lingtex_font_tl’}{}
+    \PackageError{lingtex}{Unknown~font~‘\l__lingtex_font_tl’}{}
   }
   \bool_if:NTF \l__lingtex_tipa_bool
     { \let\ipafont\textipa }
@@ -266,7 +280,7 @@
     }
     {} {\let\ipafont\rmfamily}
   }{
-    \PackageError{lingtex}{Unknown font ‘\l__lingtex_font_tl’}{}
+    \PackageError{lingtex}{Unknown~font~‘\l__lingtex_font_tl’}{}
   }
   \str_case:Vn \l__lingtex_examples_tl {
     { expex } { \let\gla\oldgla }}
