@@ -3,63 +3,13 @@
 \usepackage{csquotes}
 \usepackage[
     examples=expex,
-    font=cochineal,
+    font=times,
     trees=forest,
+    tableaux=OTtablx,
     biblatex=false,
     tipa
 ]{lingtex}
 \usepackage{kantlipsum}
-
-% \RequirePackage{forest}
-% \useforestlibrary{linguistics}
-% \forestapplylibrarydefaults{linguistics}
-% \forestset{
-% 	nice trees/.style={
-% 		for tree={
-% 			parent anchor=south,
-% 			child anchor=north,
-% 			align=center,
-% 			base=top,
-% 			inner sep=1pt,
-% 			l-=4ex,
-% 			before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
-% 				if content={}{
-% 					for parent={
-% 						for children={anchor=north},
-% 						calign=fixed edge angles,
-% 						calign angle=60,
-% 					},
-% 					shape=coordinate,
-% 					calign=fixed edge angles,
-% 					calign angle=60,
-% 				}{},
-% 			},
-% 		},
-% 	},
-% 	somewhat nice trees/.style={% needed to avoide divide by 0 errors: http://tex.stackexchange.com/q/204094/42880
-% 		for tree={
-% 			parent anchor=south,
-% 			child anchor=north,
-% 			align=center,
-% 			base=top,
-% 			inner sep=1pt,
-% 			l-=4ex,
-% 			before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
-% 				if content={}{
-% 					for parent={
-% 						for children={anchor=north},
-% 						calign=fixed edge angles,
-% 						calign angle=60,
-% 					},
-% 					inner sep=0pt,
-% 					edge path={\noexpand\path [\forestoption{edge}] (!u.parent anchor) -- (.south)\forestoption{edge label};}, %from http://tex.stackexchange.com/a/281546
-% 					calign=fixed edge angles,
-% 					calign angle=60,
-% 				}{},
-% 			},
-% 		},
-% 	}
-% }
 
 % \def\type#1{\textsf{#1}}
 % \def\e{\type{e}}
@@ -87,6 +37,10 @@
 \maketitle
 
 \kant[1]
+
+\textsc{this is a test}\textbf{Bold Text!}
+
+\textsf{Some sans-serif text}
 
 What is the meaning of \den{this}? Let's look at some IPA examples: \ipa{\ipademo} and \allo{\ipademo} and \phon{\ipademo}. Lexical items like \lex{this} are very \lex[\textsc{ing}]{tse-} useful.
 

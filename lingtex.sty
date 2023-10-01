@@ -11,32 +11,26 @@
   { 
     % Should TIPA be loaded?
     tipa .bool_set:N = \l__lingtex_tipa_bool,
-    % tipa .default:n = true,
     tipa .initial:n = false,
     
     % Which font should be used?
     font .tl_set:N = \l__lingtex_font_tl,
-    % font .default:n = times,
     font .initial:n = times,
 
     % Which package should be used for OT tableaux?
     tableaux .tl_set:N = \l__lingtex_tableaux_tl,
-    % tableaux .default:n = OTtablx,
     tableaux .initial:n = ,
 
     % Which package should be used for trees?
     trees .tl_set:N = \l__lingtex_trees_tl,
-    % trees .default:n = forest,
     trees .initial:n = ,
 
     % Which package should be used for examples?
     examples .tl_set:N = \l__lingtex_examples_tl,
-    % examples .default:n = expex,
     examples .initial:n = ,
 
     % Should Biblatex be loaded?
     biblatex .bool_set:N = \l__lingtex_biblatex_bool,
-    % biblatex .default:n = true,
     biblatex .initial:n = false,
   }
 \ProcessKeyOptions [ lingtex ]
@@ -50,6 +44,7 @@
 \RequirePackage{hyperref}
 \RequirePackage{cleveref}  % LoadAfter: hyperref
 \RequirePackage{iftex}
+\RequirePackage{leipzig}
 \RequirePackage{microtype}
 \RequirePackage{setspace}
 \RequirePackage{stmaryrd}
@@ -61,11 +56,11 @@
 \setlist[enumerate]{itemsep=0pt}
 
 % Page Layout
-\newgeometry{margin=1.2in}
-\onehalfspacing
+% \newgeometry{margin=1.2in}
+% \onehalfspacing
 
-\bool_if:NT \l__lingtex_tipa_bool
-  { \RequirePackage{tipa} }
+% \bool_if:NT \l__lingtex_tipa_bool
+%   { \RequirePackage{tipa} }
 
 % gb4e redefines some commands which forest uses; 
 % we have to load forest before gb4e
@@ -228,8 +223,33 @@
 
 % Load tableaux package
 \str_case:VnF \l__lingtex_tableaux_tl {
-  { OTtablx } { \RequirePackage{OTtablx} }
-  { ot-tableau } { \RequirePackage{ot-tableau} }
+  { OTtablx } { 
+    \ifPDFTeX
+      \msg_new:nnn { lingtex } { lingtex warning } { OTtablx~is~not~compatible~with~PDFLaTeX;~use~a~unicode-compatible~engine~instead,~or~switch~to~the~ot-tableau~option!}
+      \msg_warning:nn { lingtex } { lingtex warning }
+    \fi
+
+    % OTTablx redefines \ipafont and \textipa, so we need to save
+    % them and restore them after loading the package.
+    \let\oldipafont\ipafont
+    \let\ipafont\relax
+    \let\oldtextipa\textipa
+    \let\textipa\relax
+    \RequirePackage[noipa]{OTtablx} 
+    \let\ipafont\oldipafont
+    \bool_if:NT \l__lingtex_tipa_bool
+      % It's a bad idea to use OTtablx with PDFTeX, but
+      % if you insist, I'll fix the tipa-compatibility for you.
+      {
+        \ifPDFTeX\else
+          \let\textipa\oldtextipa
+        \fi
+      }
+  }
+  { ot-tableau } { 
+    \RequirePackage[notipa]{ot-tableau} 
+    \let\ipa\relax
+  }
   {} {}
 }{
   \PackageError{lingtex}{Unknown~tableaux~package~‘\l__lingtex_tableaux_tl’}{}
@@ -249,32 +269,43 @@
     \PackageError{lingtex}{Unknown~font~‘\l__lingtex_font_tl’}{}
   }
   \bool_if:NTF \l__lingtex_tipa_bool
-    { \let\ipafont\textipa }
+    { 
+      \RequirePackage{tipa}
+      \let\ipafont\tipaencoding
+    }
     { 
       \msg_new:nnn { lingtex } { lingtex warning } { You~are~using~a~non~unicode~compatible~TeX~engine~but~you~haven't~loaded~tipa;~if~you~intend~on~using~IPA~symbols~you~should~load~tipa~or~switch~to~a~unicode~compatible~engine!}
       \msg_warning:nn { lingtex } { lingtex warning }
       \let\ipafont\rmfamily 
     }
 \else 
+  \bool_if:NT \l__lingtex_tipa_bool
+  {
+    \RequirePackage[
+      preservefont,
+    ]{tipauni}
+  }
   \str_case:Vn \l__lingtex_examples_tl {
     % expex / unicode-math fix
     % unicode-math redefines \gla at document start, we redefine it back
     { expex } { \let\oldgla\gla }}
-  \usepackage[default]{fontsetup}
   \str_case:VnF \l__lingtex_font_tl {
     { libertinus } {
-      \setmainfont{Libertinus Serif}
-      \setsansfont{Libertinus Sans}
+      \RequirePackage[libertinus]{fontsetup}
       \let\ipafont\rmfamily
     }
     { lmodern } { 
-      \setmainfont{Latin Modern Roman}
-      \newfontfamily\cmu{CMU Serif}[Scale=MatchLowercase]
-      \let\ipafont\cmu
+      % I have no idea why this is necessary, but for some reason
+      % *only* the `default` option (loading New Computer Modern)
+      % causes a conflict with `tipauni`.
+      \let\oldtextipa\textipa
+      \let\textipa\relax
+      \RequirePackage[default]{fontsetup}
+      \let\textipa\oldtextipa
+      \let\ipafont\rmfamily
     }
     { times } { 
-      \setmainfont{TeX Gyre Termes} 
-      \setmathfont[math-style=ISO,bold-style=ISO]{XITS Math}
+      \RequirePackage[times]{fontsetup}
       \newfontfamily\doulos{Doulos SIL}[Scale=MatchLowercase]
       \let\ipafont\doulos
     }
@@ -282,6 +313,7 @@
   }{
     \PackageError{lingtex}{Unknown~font~‘\l__lingtex_font_tl’}{}
   }
+  % \def\ipafontfont{\textipa\ipafont}
   \str_case:Vn \l__lingtex_examples_tl {
     { expex } { \let\gla\oldgla }}
 \fi
@@ -299,7 +331,7 @@
   }
 \NewDocumentCommand \ipa {m}
   % For formatting IPA strings
-  {\text{\ipafont{#1}}}
+  {\text{\ipafont\textipa{#1}}}
 \NewDocumentCommand \orth {m}
   % For orthgraphic forms in <angle brackets>
   {\ensuremath{\left\langle\text{#1}\right\rangle}}
