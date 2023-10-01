@@ -1,228 +1,306 @@
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{lingtex}[2023-09-22 Linguistics Meta-Package]
+\RequirePackage{expl3}
+\ExplSyntaxOn
 
-\newif\iflinglm
-\newif\iflingtipa
-\lingtipafalse
-\linglmfalse
-\DeclareOption{tipa}{\lingtipatrue}
-\DeclareOption{lm}{\linglmtrue}
-\DeclareOption{times}{\linglmfalse}
-\DeclareOption*{\PackageWarning{lingtex}{Unknown ‘\CurrentOption’}}
-\ProcessOptions\relax
+\ProvidesExplPackage
+  {lingtex}  % package name
+  {2023-09-22}  % release date
+  {0.1}  % release version
+  {Linguistics~meta-package}  % description
 
-%% Packages
+\keys_define:nn { lingtex }
+  { 
+    % Should TIPA be loaded?
+    tipa .bool_set:N = \l__lingtex_tipa_bool,
+    tipa .default:n = true,
+    tipa .initial:n = false,
+    
+    % Which font should be used?
+    font .tl_set:N = \l__lingtex_font_tl,
+    font .default:n = times,
+    font .initial:n = times,
+
+    % Which package should be used for OT tableaux?
+    tableaux .tl_set:N = \l__lingtex_tableaux_tl,
+    tableaux .default:n = OTtablx,
+    tableaux .initial:n = ,
+
+    % Which package should be used for trees?
+    trees .tl_set:N = \l__lingtex_trees_tl,
+    trees .default:n = forest,
+    trees .initial:n = ,
+
+    % Which package should be used for examples?
+    examples .tl_set:N = \l__lingtex_examples_tl,
+    examples .default:n = expex,
+    examples .initial:n = ,
+
+	% Should Biblatex be loaded?
+	biblatex .bool_set:N = \l__lingtex_biblatex_bool,
+	biblatex .default:n = true,
+	biblatex .initial:n = false,
+  }
+\ProcessKeyOptions [ lingtex ]
+
+% Packages
 \RequirePackage[fleqn]{amsmath}
 \RequirePackage{amssymb}
-\RequirePackage[table, dvipsnames]{xcolor}
-\RequirePackage{hyperref}
-\RequirePackage{cleveref}
-\RequirePackage{setspace}
-\RequirePackage{expl3}
-\RequirePackage{stmaryrd}
-\RequirePackage{expex}
-\RequirePackage{geometry}
-\RequirePackage{enumitem}
-\RequirePackage{iftex}
-\RequirePackage{epltxfn}
-\RequirePackage{forest}
-\RequirePackage{tabularx}
 \RequirePackage{booktabs}
-% \RequirePackage{biblatex-unified}
-\RequirePackage[
-	style=unified,
-	maxcitenames=3,
-	maxbibnames=99,
-	backend=biber,
-	natbib=true,
-]{biblatex}
-
-
-%%%%%
-
-% ExPex Formatting
-\lingset{%
-	aboveexskip=1.25ex,
-	belowexskip=1.5ex,
-	glstyle=wrap,
-	everyglpreamble={\itshape},
-	belowglpreambleskip=-0.2ex,
-	everygla={\itshape},
-	aboveglftskip=-0.2ex,
-	textoffset=\tabcolsep,
-	interpartskip=0.5ex,
-	glspace=!2pt plus .2em,
-	glrightskip=0pt plus .5\hsize
-}
-\gathertags % Allow forward references with expex
-
-% Tree settings
-\useforestlibrary{linguistics}
-\forestapplylibrarydefaults{linguistics}
-\forestset{
-	nice trees/.style={
-			for tree={
-					parent anchor=south,
-					child anchor=north,
-					align=center,
-					base=top,
-					inner sep=1pt,
-					l-=4ex,
-					before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
-							if content={}{
-									for parent={
-											for children={anchor=north},
-											calign=fixed edge angles,
-											calign angle=60,
-										},
-									shape=coordinate,
-									calign=fixed edge angles,
-									calign angle=60,
-								}{},
-						},
-				},
-		},
-	somewhat nice trees/.style={% needed to avoide divide by 0 errors: http://tex.stackexchange.com/q/204094/42880
-			for tree={
-					parent anchor=south,
-					child anchor=north,
-					align=center,
-					base=top,
-					inner sep=1pt,
-					l-=4ex,
-					before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
-							if content={}{
-									for parent={
-											for children={anchor=north},
-											calign=fixed edge angles,
-											calign angle=60,
-										},
-									inner sep=0pt,
-									edge path={\noexpand\path [\forestoption{edge}] (!u.parent anchor) -- (.south)\forestoption{edge label};}, %from http://tex.stackexchange.com/a/281546
-									calign=fixed edge angles,
-									calign angle=60,
-								}{},
-						},
-				},
-		}
-}
-\usetikzlibrary{positioning,arrows.meta}
-\DeclareDocumentCommand \tikzexsetup {} {%
-\tikzstyle{every picture}+=[remember picture, inner sep=0pt,
-baseline, anchor=base]}
-% arg 1: optional strut; arg 2: node name; arg 3: node content
-\DeclareDocumentCommand \ND {s m m} {%
-	\tikzifinpicture{}{\tikz}\node(#2){\IfBooleanTF{#1}{\strut}{}#3};}
-\tikzset{exarrows/.style={semithick, %fatter arrow for poster
-arrows={-{Stealth[width=0.2em,length=0.2em]}}}}
-\usetikzlibrary{
-	bbox,
-	calc,% 
-	bending,% 
-	arrows%
-}
-\tikzset{%
-	every tree node/.style={align=center,anchor=north},
-	level distance=20pt,
-	sibling distance=1.5\baselineskip,
-	>=stealth'}
-
-% Use this macro to vertically align trees when using expex
-\def\upp{\leavevmode\vadjust{\vspace{-\baselineskip}}\newline}
+\RequirePackage{enumitem}
+\RequirePackage{geometry}
+\RequirePackage{hyperref}
+\RequirePackage{cleveref}  % LoadAfter: hyperref
+\RequirePackage{iftex}
+\RequirePackage{setspace}
+\RequirePackage{stmaryrd}
+\RequirePackage{tabularx}
+\RequirePackage[table, dvipsnames]{xcolor}
 
 % Itemize
 \setitemize{itemsep=0pt}
 \setlist[enumerate]{itemsep=0pt}
 
-% Fonts
-\ifPDFTeX
-	\iflinglm
-		\usepackage{lmodern}
-	\else
-		\usepackage{mathptmx}
-	\fi
-\else
-	\iflinglm
-		\usepackage[default]{fontsetup}
-	\else
-		\usepackage[no-math]{fontspec}
-		\usepackage{unicode-math}
-		\setmainfont{TeX Gyre Termes}
-		\setmathfont[math-style=ISO,bold-style=ISO]{XITS Math}
-	\fi
-\fi
-
-\let\textipa\relax
-\let\ipafont\relax
-
-\RequirePackage[noipa]{OTtablx}
-
-\ifPDFTeX\else
-	\iflinglm
-		\let\ipafont\textipa
-	\else
-		\newfontfamily{\doulos}{Doulos SIL}[Scale=MatchLowercase]
-		\let\ipafont\doulos
-	\fi
-\fi
-
-% expex / unicode-math fix
-% unicode-math redefines \gla at document start, we redefine it back
-\ifPDFTeX\else
-	\let\oldgla\gla
-	\AtBeginDocument{\let\gla\oldgla}
-\fi
-
-%% Bibliography
-\DeclareSourcemap{
-	\maps[datatype=bibtex]{
-		\map{
-			\step[fieldsource=url,
-				notmatch=\regexp{wiki},
-				final=1]
-			\step[fieldset=urldate, null]
-		}
-	}
-}
-
-\AtEveryBibitem{%
-	\clearfield{note}%
-}
-
-\renewbibmacro*{doi+eprint+url}{%
-	\printfield{doi}%
-	\newunit\newblock%
-	\iftoggle{bbx:eprint}{%
-		\usebibmacro{eprint}%
-	}{}%
-	\newunit\newblock%
-	\iffieldundef{doi}{%
-		\usebibmacro{url+urldate}}%
-	{}%
-}
-
 % Page Layout
 \newgeometry{margin=1.2in}
-% \AtBeginDocument{\fontsize{12}{16}\selectfont}
-\AtBeginBibliography{\normalsize}
 \onehalfspacing
 
+\bool_if:NT \l__lingtex_tipa_bool
+	{ \RequirePackage{tipa} }
+
+\str_case:VnF \l__lingtex_examples_tl {
+	{ expex } { 
+		\RequirePackage{expex}
+		\RequirePackage{epltxfn}
+		% ExPex Formatting
+		\lingset{%
+			aboveexskip=1.25ex,
+			belowexskip=1.5ex,
+			glstyle=wrap,
+			everyglpreamble={\itshape},
+			belowglpreambleskip=-0.2ex,
+			everygla={\itshape},
+			aboveglftskip=-0.2ex,
+			textoffset=\tabcolsep,
+			interpartskip=0.5ex,
+			glspace=!2pt plus .2em,
+			glrightskip=0pt plus .5\hsize
+		}
+		\gathertags % Allow forward references with expex
+	}
+	{ gb4e } { \RequirePackage{gb4e} }
+	{ linguex } { \RequirePackage{linguex} }
+	{ covington } { 
+		\RequirePackage{covington} 
+		\def\cl@chapter{\@elt {section}}
+	}
+	{} {}
+}{
+	\PackageError{lingtex}{Unknown examples package ‘\l__lingtex_examples_tl’}{}
+}
+
+\bool_if:NT \l__lingtex_biblatex_bool { 
+  \RequirePackage[
+    style=unified,  % S&P unified style
+    maxcitenames=3,
+    maxbibnames=99,
+    backend=biber,
+    natbib=true,
+  ]{biblatex} 
+
+  % Clean up bibliographies a bit.
+  \AtBeginBibliography{\normalsize}
+  \DeclareSourcemap{
+    \maps[datatype=bibtex]{
+      \map{
+        \step[fieldsource=url, notmatch=\regexp{wiki}, final=1]
+        \step[fieldset=urldate, null]  % Never show 'date accsessed'
+      }
+      \map{
+        \step[fieldset=note, null]  % Never show 'note'
+      }
+    }
+  }
+
+  % Display eprints
+  \renewbibmacro*{doi+eprint+url}{
+    \printfield{doi}
+    \newunit\newblock
+    \iftoggle{bbx:eprint}{
+      \usebibmacro{eprint}
+    }{}%
+    \newunit\newblock
+    \iffieldundef{doi}{
+      \usebibmacro{url+urldate}}
+    {}
+  }
+}
+
+\str_case:VnF \l__lingtex_trees_tl {
+  { forest } {
+    \RequirePackage{forest}
+    \useforestlibrary{linguistics}
+    \forestapplylibrarydefaults{linguistics}
+    \forestset{
+      nice trees/.style={
+        for tree={
+          parent anchor=south,
+          child anchor=north,
+          align=center,
+          base=top,
+          inner sep=1pt,
+          l-=4ex,
+          before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
+            if content={}{
+              for parent={
+                for children={anchor=north},
+                calign=fixed edge angles,
+                calign angle=60,
+              },
+              shape=coordinate,
+              calign=fixed edge angles,
+              calign angle=60,
+            }{},
+          },
+        },
+      },
+      somewhat nice trees/.style={% needed to avoide divide by 0 errors: http://tex.stackexchange.com/q/204094/42880
+        for tree={
+          parent anchor=south,
+          child anchor=north,
+          align=center,
+          base=top,
+          inner sep=1pt,
+          l-=4ex,
+          before typesetting nodes={% based on nice empty nodes - page 52 of the manual, used in Jason Zentz's answer: http://tex.stackexchange.com/a/216103/
+            if content={}{
+              for parent={
+                for children={anchor=north},
+                calign=fixed edge angles,
+                calign angle=60,
+              },
+              inner sep=0pt,
+              edge path={\noexpand\path [\forestoption{edge}] (!u.parent anchor) -- (.south)\forestoption{edge label};}, %from http://tex.stackexchange.com/a/281546
+              calign=fixed edge angles,
+              calign angle=60,
+            }{},
+          },
+        },
+      }
+    }
+    \usetikzlibrary{positioning,arrows.meta}
+    \DeclareDocumentCommand \tikzexsetup {} {%
+    \tikzstyle{every picture}+=[remember picture, inner sep=0pt,
+    baseline, anchor=base]}
+    % arg 1: optional strut; arg 2: node name; arg 3: node content
+    \DeclareDocumentCommand \ND {s m m} {%
+      \tikzifinpicture{}{\tikz}\node(#2){\IfBooleanTF{#1}{\strut}{}#3};}
+    \tikzset{exarrows/.style={semithick, %fatter arrow for poster
+    arrows={-{Stealth[width=0.2em,length=0.2em]}}}}
+    \usetikzlibrary{
+      bbox,
+      % calc,% 
+      bending,% 
+      arrows%
+    }
+    \tikzset{%
+      every tree node/.style={align=center,anchor=north},
+      level distance=20pt,
+      sibling distance=1.5\baselineskip,
+      >=stealth'}
+  }
+  {} {}
+}{
+	\PackageError{lingtex}{Unknown trees package ‘\l__lingtex_trees_tl’}{}
+}
+
+% Load tableaux package
+\str_case:VnF \l__lingtex_tableaux_tl {
+  { OTtablx } { \RequirePackage{OTtablx} }
+  { ot-tableau } { \RequirePackage{ot-tableau} }
+  {} {}
+}{
+  \PackageError{lingtex}{Unknown tableaux package ‘\l__lingtex_tableaux_tl’}{}
+}
+
+% Load fonts
+% We need to load fonts after most of the packages since they
+% may define IPA fonts that we want to override.
+\ifPDFTeX
+  \str_case:VnF \l__lingtex_font_tl {
+    { cochineal } { \RequirePackage{cochineal} }
+    { libertinus } { \RequirePackage{libertinus} }
+    { lmodern } { \RequirePackage{lmodern} }
+    { times } { \RequirePackage{mathptmx} }
+    {} {}
+  }{
+    \PackageError{lingtex}{Unknown font ‘\l__lingtex_font_tl’}{}
+  }
+  \bool_if:NTF \l__lingtex_tipa_bool
+    { \let\ipafont\textipa }
+    { 
+      \msg_new:nnn { lingtex } { lingtex warning } { You~are~using~a~non~unicode~compatible~TeX~engine~but~you~haven't~loaded~tipa;~if~you~intend~on~using~IPA~symbols~you~should~load~tipa~or~switch~to~a~unicode~compatible~engine!}
+      \msg_warning:nn { lingtex } { lingtex warning }
+      \let\ipafont\rmfamily 
+    }
+\else 
+  \str_case:Vn \l__lingtex_examples_tl {
+    % expex / unicode-math fix
+    % unicode-math redefines \gla at document start, we redefine it back
+    { expex } { \let\oldgla\gla }}
+  \usepackage[default]{fontsetup}
+  \str_case:VnF \l__lingtex_font_tl {
+    { libertinus } {
+      \setmainfont{Libertinus Serif}
+      \setsansfont{Libertinus Sans}
+      \let\ipafont\rmfamily
+    }
+    { lmodern } { 
+      \setmainfont{Latin Modern Roman}
+      \newfontfamily\cmu{CMU Serif}[Scale=MatchLowercase]
+      \let\ipafont\cmu
+    }
+    { times } { 
+      \setmainfont{TeX Gyre Termes} 
+      \setmathfont[math-style=ISO,bold-style=ISO]{XITS Math}
+      \newfontfamily\doulos{Doulos SIL}[Scale=MatchLowercase]
+      \let\ipafont\doulos
+    }
+    {} {\let\ipafont\rmfamily}
+  }{
+    \PackageError{lingtex}{Unknown font ‘\l__lingtex_font_tl’}{}
+  }
+  \str_case:Vn \l__lingtex_examples_tl {
+    { expex } { \let\gla\oldgla }}
+\fi
 
 % Custom linguistics macros
-\ExplSyntaxOn
-\def\ipa#1{{\textup{\normalfont\ipafont #1}}}
-\def\phon/#1/{\ensuremath{/\text{\ipa{#1}}/}}
-\def\allo[#1]{\ensuremath{[\text{\ipa{#1}}]}}
-\def\orth#1{\ensuremath{\left\langle\text{{\orthfont #1}}\right\rangle}}
-\let\denfont\relax
-\NewDocumentCommand{\den}{ O{}m }{\ensuremath{\left\llbracket\text{\denfont #2}\right\rrbracket^{#1}}}
-\def\lex#1{\emph{#1}}
-\makeatother
-\NewDocumentCommand\lem{ mo }{
-	\IfValueTF{#2}{
-		{#1}~`#2'
-	}{
-		\lex{#1}
-	}
-}
+\NewDocumentCommand \lex {om}
+  % For formatting lexical entires. If only a single argument is given,
+  % it is typeset in italics. If an optional argument is given,
+  % it is treated as the translated form and set in quotes after
+  % the lexical entry.
+  {
+    \IfValueTF{#1}
+      {\emph{#2}~`#1'}
+      {\emph{#2}}
+  }
+\NewDocumentCommand \ipa {m}
+  % For formatting IPA strings
+  {\text{\ipafont{#1}}}
+\NewDocumentCommand \orth {m}
+  % For orthgraphic forms in <angle brackets>
+  {\ensuremath{\left\langle\text{#1}\right\rangle}}
+\NewDocumentCommand \phon {m}
+  % For phonological forms in /slashes/
+  {\ensuremath{/\text{\ipa{#1}}/}}
+\NewDocumentCommand \allo {m}
+  % For phonetic forms in [brackets]
+  {\ensuremath{[\text{\ipa{#1}}]}}
+\NewDocumentCommand \den {m}
+  % For denotations in [[double brackets]]
+  {\ensuremath{\left\llbracket\text{#1}\right\rrbracket}}
+
+% Use this macro to vertically align trees when using expex
+\def\upp{\leavevmode\vadjust{\vspace{-\baselineskip}}\newline}
+
+
 \ExplSyntaxOff
