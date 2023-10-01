@@ -3,9 +3,7 @@
 \usepackage[
     examples=expex,
     font=lmodern,
-    % trees=forest,
     biblatex=false,
-    % tipa
 ]{lingtex}
 \usepackage{csquotes}
 \usepackage{hologo}
@@ -34,29 +32,29 @@ Hello linguistics friends! This is some brief documentation for \texttt{lingtex}
 
 If you're using Overleaf, I \emph{highly} recommend using the \enquote{Add From External URL} feature; this will allow you to import files directly from this GitHub repository into your Overleaf project \emph{and} you can update the files to a new version of I fix any bugs in the code. To do this, you'll need to copy the following URL:
 $$
-    \texttt{https://raw.githubusercontent.com/jopetty/lingtex/main/lingtex.sty}
+	\texttt{https://raw.githubusercontent.com/jopetty/lingtex/main/lingtex.sty}
 $$
 Next, click on the \enquote{File} button in the upper-left-hand corner of your Overleaf project (\ref{fig:a}). Click on the \enquote{From External URL} tab (\ref{fig:b}), and paste in the URL you just copied.  Then click the green \enquote{Create} button (\ref{fig:c}). If you ever need to update the file, click on it and then click on the green \enquote{Refresh} button (\ref{fig:d}).
 
 
 \thisfloatsetup{subfloatrowsep=qquad}
 \begin{figure}[!htbp]
-    \captionsetup[subfigure]{justification=centering}
-      \ffigbox{%
-  \begin{subfloatrow}[3]%
-    \ffigbox[\FBwidth]{\caption{Step 1}\label{fig:a}}{%
-      \includegraphics[width=0.455\textwidth]{images/step-1.png}}
-    \ffigbox[\FBwidth]{\caption{Step 2}\label{fig:b}}{%
-      \includegraphics[width=0.45\textwidth]{images/step-2.png}}
-  \end{subfloatrow}
+	\captionsetup[subfigure]{justification=centering}
+	\ffigbox{%
+		\begin{subfloatrow}[3]%
+			\ffigbox[\FBwidth]{\caption{Step 1}\label{fig:a}}{%
+				\includegraphics[width=0.455\textwidth]{images/step-1.png}}
+			\ffigbox[\FBwidth]{\caption{Step 2}\label{fig:b}}{%
+				\includegraphics[width=0.45\textwidth]{images/step-2.png}}
+		\end{subfloatrow}
 
-  \begin{subfloatrow}
-    \ffigbox[\FBwidth]{\caption{Step 3}\label{fig:c}}{%
-      \includegraphics[width=0.45\textwidth]{images/step-3.png}}
-    \ffigbox[\FBwidth]{\caption{Step 4}\label{fig:d}}{%
-      \includegraphics[width=0.45\textwidth]{images/step-4.png}}
-  \end{subfloatrow}%
-      }{}
+		\begin{subfloatrow}
+			\ffigbox[\FBwidth]{\caption{Step 3}\label{fig:c}}{%
+				\includegraphics[width=0.45\textwidth]{images/step-3.png}}
+			\ffigbox[\FBwidth]{\caption{Step 4}\label{fig:d}}{%
+				\includegraphics[width=0.45\textwidth]{images/step-4.png}}
+		\end{subfloatrow}%
+	}{}
 \end{figure}
 
 % \begin{figure}[htb!]
@@ -92,14 +90,14 @@ Next, click on the \enquote{File} button in the upper-left-hand corner of your O
 \lingtex\ provides a number of commands which are generally useful for linguistics:
 
 \begin{itemize}
-    \item \verb|\lex{}| for lexical items. This sets whatever argument you pass in in italics. For example, \verb|\lex{gato}| becomes \lex{gato}. It also allows you to provide an optional translation, which will be placed after in single quotes. For example, \verb|\lex[cat]{gato}| becomes \lex[cat]{gato}.
-    \item \verb|\ipa{}| for IPA transcriptions. Internally, \lingtex\ defines a special command \verb|\ipafont| which you can set to an IPA font of your choice. We also load \verb|tipa| under the hood, so you can use any TIPA commands inside of \verb|\ipa{}|. For example, \verb|\ipa{f@"nEtIks}| becomes \ipa{f@"nEtIks}. We also define some additional commands which build on \verb|\ipa{}|:
-    \begin{itemize}
-        \item \verb|\allo{}| for allophones. This sets whatever argument you pass in in square brackets. For example, \verb|\allo{f@"nEtIks}| becomes \allo{f@"nEtIks}.
-        \item \verb|\phon{}| for phonemes. This sets whatever argument you pass in in slashes. For example, \verb|\phon{f@"nEtIks}| becomes \phon{f@"nEtIks}.
-    \end{itemize}
-    \item \verb|\orth{}| for orthographic representations. This sets whatever argument you pass in in angle brackets. For example, \verb|\orth{cat}| becomes \orth{cat}. Note that this does \emph{not} use the \verb|\ipafont| under the hood, since orthographic representations are not written in IPA.
-    \item \verb|\den{}| for semantic denotations. This sets whatever argument you pass in in double square brackets. For example, \verb|\den{cat}| becomes \den{cat}.
+	\item \verb|\lex{}| for lexical items. This sets whatever argument you pass in in italics. For example, \verb|\lex{gato}| becomes \lex{gato}. It also allows you to provide an optional translation, which will be placed after in single quotes. For example, \verb|\lex[cat]{gato}| becomes \lex[cat]{gato}.
+	\item \verb|\ipa{}| for IPA transcriptions. Internally, \lingtex\ defines a special command \verb|\ipafont| which you can set to an IPA font of your choice. We also load \verb|tipa| under the hood, so you can use any TIPA commands inside of \verb|\ipa{}|. For example, \verb|\ipa{f@"nEtIks}| becomes \ipa{f@"nEtIks}. We also define some additional commands which build on \verb|\ipa{}|:
+	      \begin{itemize}
+		      \item \verb|\allo{}| for allophones. This sets whatever argument you pass in in square brackets. For example, \verb|\allo{f@"nEtIks}| becomes \allo{f@"nEtIks}.
+		      \item \verb|\phon{}| for phonemes. This sets whatever argument you pass in in slashes. For example, \verb|\phon{f@"nEtIks}| becomes \phon{f@"nEtIks}.
+	      \end{itemize}
+	\item \verb|\orth{}| for orthographic representations. This sets whatever argument you pass in in angle brackets. For example, \verb|\orth{cat}| becomes \orth{cat}. Note that this does \emph{not} use the \verb|\ipafont| under the hood, since orthographic representations are not written in IPA.
+	\item \verb|\den{}| for semantic denotations. This sets whatever argument you pass in in double square brackets. For example, \verb|\den{cat}| becomes \den{cat}.
 \end{itemize}
 
 \section{Fonts} \label{sec:fonts}
@@ -110,9 +108,9 @@ Next, click on the \enquote{File} button in the upper-left-hand corner of your O
 \end{verbatim}
 Available options are:
 \begin{itemize}
-    \item \verb|times| for Times New Roman, uses the Doulos SIL font for IPA text;
-    \item \verb|lmodern| for Computer Modern;
-    \item \verb|libertinus| for Libertinus;
+	\item \verb|times| for Times New Roman, uses the Doulos SIL font for IPA text;
+	\item \verb|lmodern| for Computer Modern;
+	\item \verb|libertinus| for Libertinus;
 \end{itemize}
 
 If you want to use a custom font, you can load it in the normal way (either by including a package for \hologo{pdfLaTeX} or by using \verb|fontspec| for \hologo{XeLaTeX} or \hologo{LuaLaTeX}). If you want to use a custom font for IPA text, you can set the \verb|\ipafont| command to the name of the font you want to use.
@@ -127,10 +125,10 @@ If you want to use a custom font, you can load it in the normal way (either by i
 \end{verbatim}
 The supported options are:
 \begin{itemize}
-    \item \verb|expex|: Loads the \texttt{expex} package.
-    \item \verb|gb4e|: Loads the \texttt{gb4e} package.
-    \item \verb|linguex|: Loads the \texttt{linguex} package.
-    \item \verb|covington|: Loads the \texttt{covington} package.
+	\item \verb|expex|: Loads the \texttt{expex} package.
+	\item \verb|gb4e|: Loads the \texttt{gb4e} package.
+	\item \verb|linguex|: Loads the \texttt{linguex} package.
+	\item \verb|covington|: Loads the \texttt{covington} package.
 \end{itemize}
 You can, of course, load any of these packages manually if you'd prefer, but \lingtex\ will also add some custom bug-fixes to make other package options play nicely with each other.
 
@@ -142,10 +140,10 @@ Similarly, \lingtex\ provides a way to auto-load various tree-drawing packages. 
 \end{verbatim}
 The supported options are:
 \begin{itemize}
-    \item \verb|forest|: Loads the \texttt{forest} package.
-    \item \verb|qtree|: Loads the \texttt{qtree} package.
-    \item \verb|tikz-qtree|: Loads the \texttt{tikz-qtree} package.
-    \item \verb|pstrees|: Loads the \texttt{pstrees} package.
+	\item \verb|forest|: Loads the \texttt{forest} package.
+	\item \verb|qtree|: Loads the \texttt{qtree} package.
+	\item \verb|tikz-qtree|: Loads the \texttt{tikz-qtree} package.
+	\item \verb|pstrees|: Loads the \texttt{pstrees} package.
 \end{itemize}
 
 \section{Phonology} \label{sec:phonology}
@@ -158,8 +156,8 @@ Similarly, \lingtex\ provides a way to auto-load various tableaux packages. By d
 \end{verbatim}
 The supported options are:
 \begin{itemize}
-    \item \verb|ot-tableau|: Loads the \texttt{ot-tableau} package.
-    \item \verb|OTtablx|: Loads the \texttt{OTtablx} package. \textbf{Warning:} This package uses \texttt{ps-tricks} under the hood, which is incompatible with \hologo{pdfLaTeX}. It won't throw an error if you try to use this option with \hologo{pdfLaTeX}, but it will display a warning.
+	\item \verb|ot-tableau|: Loads the \texttt{ot-tableau} package.
+	\item \verb|OTtablx|: Loads the \texttt{OTtablx} package. \textbf{Warning:} This package uses \texttt{ps-tricks} under the hood, which is incompatible with \hologo{pdfLaTeX}. It won't throw an error if you try to use this option with \hologo{pdfLaTeX}, but it will display a warning.
 \end{itemize}
 
 \subsection{TIPA} \label{ssec:tipa}
