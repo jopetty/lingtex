@@ -1,31 +1,17 @@
 \documentclass{article}
 
-\usepackage{subcaption}
 \usepackage[
     examples=expex,
-    font=cochineal,
+    font=lmodern,
     % trees=forest,
     biblatex=false,
     % tipa
 ]{lingtex}
 \usepackage{csquotes}
 \usepackage{hologo}
-\usepackage{graphicx}
-\usepackage{floatrow}
-\captionsetup[subfigure]{labelformat=parens,labelsep=space}
-% \def\type#1{\textsf{#1}}
-% \def\e{\type{e}}
-% \def\t{\type{t}}
-% \def\ann{\textbf{ann}}
-% \def\bill{\textbf{bill}}
-% \def\bea{\textbf{bea}}
-% \def\cam{\textbf{cam}}
-% \def\di{\textbf{di}}
-% \def\jan{\textbf{jan}}
-% \DeclareMathOperator{\seated}{\textbf{seated}}
-% \DeclareMathOperator{\near}{\textbf{near}}
-% \DeclareMathOperator{\sing}{\textbf{sing}}
-% \DeclareMathOperator{\like}{\textbf{like}}
+\usepackage{graphicx,subfig}
+\usepackage[heightadjust=all,valign=c]{floatrow}
+\usepackage{fr-subfig}
 
 \def\movesrc{\ensuremath{\circ}}
 \def\lingtex{\texttt{lingtex}}
@@ -50,35 +36,56 @@ If you're using Overleaf, I \emph{highly} recommend using the \enquote{Add From 
 $$
     \texttt{https://raw.githubusercontent.com/jopetty/lingtex/main/lingtex.sty}
 $$
-Next, click on the \enquote{File} button in the upper-left-hand corner of your Overleaf project (\ref{subfig:step-1}). Click on the \enquote{From External URL} tab (\ref{subfig:step-2}), and paste in the URL you just copied.  Then click the green \enquote{Create} button (\ref{subfig:step-3}). If you ever need to update the file, click on it and then click on the green \enquote{Refresh} button (\ref{subfig:step-4}).
+Next, click on the \enquote{File} button in the upper-left-hand corner of your Overleaf project (\ref{fig:a}). Click on the \enquote{From External URL} tab (\ref{fig:b}), and paste in the URL you just copied.  Then click the green \enquote{Create} button (\ref{fig:c}). If you ever need to update the file, click on it and then click on the green \enquote{Refresh} button (\ref{fig:d}).
 
-\begin{figure}[htb!]
-    \ffigbox[\textwidth]
-      {
-        \begin{floatrow}
-        \ffigbox[\linewidth]
-          {
-          \label{subfig:step-1}}
-          {\includegraphics[width=\linewidth]{images/step-1.png}\caption{Step 1}}
-        \ffigbox[\linewidth]
-          {
-          \label{subfig:step-2}}
-          {\includegraphics[width=\linewidth]{images/step-2.png}\caption{Step 2}}
-        \end{floatrow}%
-        \newline
-        \begin{floatrow}
-            \ffigbox[\linewidth]
-              {
-              \label{subfig:step-3}}
-              {\includegraphics[width=\linewidth]{images/step-3.png}\caption{Step 3}}
-            \ffigbox[\linewidth]
-              {
-              \label{subfig:step-4}}
-              {\includegraphics[width=\linewidth]{images/step-4.png}\caption{Step 4}}
-            \end{floatrow}%
-      }
-      {\label{fig:steps}}
+
+\thisfloatsetup{subfloatrowsep=qquad}
+\begin{figure}[!htbp]
+    \captionsetup[subfigure]{justification=centering}
+      \ffigbox{%
+  \begin{subfloatrow}[3]%
+    \ffigbox[\FBwidth]{\caption{Step 1}\label{fig:a}}{%
+      \includegraphics[width=0.455\textwidth]{images/step-1.png}}
+    \ffigbox[\FBwidth]{\caption{Step 2}\label{fig:b}}{%
+      \includegraphics[width=0.45\textwidth]{images/step-2.png}}
+  \end{subfloatrow}
+
+  \begin{subfloatrow}
+    \ffigbox[\FBwidth]{\caption{Step 3}\label{fig:c}}{%
+      \includegraphics[width=0.45\textwidth]{images/step-3.png}}
+    \ffigbox[\FBwidth]{\caption{Step 4}\label{fig:d}}{%
+      \includegraphics[width=0.45\textwidth]{images/step-4.png}}
+  \end{subfloatrow}%
+      }{}
 \end{figure}
+
+% \begin{figure}[htb!]
+%     \ffigbox[\textwidth]
+%       {
+%         \begin{floatrow}
+%         \ffigbox[\linewidth]
+%           {
+%           }
+%           {\includegraphics[width=\linewidth]{images/step-1.png}\caption{Step 1}\label{subfig:step-1}}
+%         \ffigbox[\linewidth]
+%           {
+%           }
+%           {\includegraphics[width=\linewidth]{images/step-2.png}\caption{Step 2}\label{subfig:step-2}}
+%         \end{floatrow}%
+%         \newline
+%         \begin{floatrow}
+%             \ffigbox[\linewidth]
+%               {
+%               \label{subfig:step-3}}
+%               {\includegraphics[width=\linewidth]{images/step-3.png}\caption{Step 3}}
+%             \ffigbox[\linewidth]
+%               {
+%               \label{subfig:step-4}}
+%               {\includegraphics[width=\linewidth]{images/step-4.png}\caption{Step 4}}
+%             \end{floatrow}%
+%       }
+%       {\label{fig:steps}}
+% \end{figure}
 
 \section{Linguistics Features} \label{sec:linguistics-features}
 
