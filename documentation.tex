@@ -157,7 +157,10 @@ Similarly, \lingtex\ provides a way to auto-load various tableaux packages. By d
 The supported options are:
 \begin{itemize}
 	\item \verb|ot-tableau|: Loads the \texttt{ot-tableau} package.
-	\item \verb|OTtablx|: Loads the \texttt{OTtablx} package. \textbf{Warning:} This package uses \texttt{ps-tricks} under the hood, which is incompatible with \hologo{pdfLaTeX}. It won't throw an error if you try to use this option with \hologo{pdfLaTeX}, but it will display a warning.
+	\item \verb|OTtablx|: Loads the \texttt{OTtablx} package. \textbf{Warning:} This package uses \texttt{ps-tricks} under the hood, which is incompatible with \hologo{pdfLaTeX}. It won't throw an error if you try to use this option with \hologo{pdfLaTeX}, but it will display a warning. \textbf{Another Warning:} \texttt{OTtablx} is also an unofficial package, which means that to use it you'll need to copy the file into your project manually, similar to how you installed \lingtex\ itself. Follow the same procedure but with the following URL:
+	      $$
+		      \texttt{https://raw.githubusercontent.com/jopetty/lingtex/main/OTtablx.sty}
+	      $$
 \end{itemize}
 
 \subsection{TIPA} \label{ssec:tipa}
