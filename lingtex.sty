@@ -313,7 +313,11 @@ sibling~distance=1.5\baselineskip,
 				\let\ipafont\rmfamily
 			}
 			{ times } {
-				\RequirePackage[times]{fontsetup}
+				% \RequirePackage[times]{fontsetup}
+				% \RequirePackage[nomath]{fontspec}
+				\setmainfont{TeX Gyre Termes}
+				\RequirePackage{unicode-math}
+				\setmathfont{XITS Math}
 				\newfontfamily\doulos{Doulos SIL}[Scale=MatchLowercase]
 				\let\ipafont\doulos
 			}
