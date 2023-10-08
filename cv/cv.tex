@@ -1,0 +1,70 @@
+\documentclass{article}
+
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{kantlipsum}
+\usepackage{tabularx}
+\usepackage{parskip}
+\usepackage{multirow}
+
+% Fonts
+\usepackage{libertinus}
+
+% Make lists flush-left
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep,topsep=0pt,leftmargin=*}
+
+
+% Custom section formatting
+\usepackage[explicit]{titlesec}
+\titleformat{\section}{\large\scshape}{}{0em}{#1}[]
+\titleformat{\subsection}{\normalsize}{}{0em}{#1}[]
+
+% Bibliography management
+\usepackage[
+    style=publist,
+    hlyear=false,
+    maxnames=99,
+    plauthorhandling=highlight,
+    nameorder=given-family,
+]{biblatex}
+\plauthorname{Appleseed}
+\nocite{*}
+\boolfalse{newsection}  % temporary fix for negative numbers publist bug
+\addbibresource{publications.bib}
+
+\begin{document}
+\begin{tabularx}{\textwidth}{@{}Xrr@{}}
+	\multirow{2}{*}{\LARGE\bfseries Johnny Appleseed} & appleseed@nyu.edu                                      & johnnyappleseed.com \\
+	                                                  & \multicolumn{2}{r@{}}{\itshape Last updated on \today}
+\end{tabularx}
+
+\section*{Education}
+
+\subsection*{\textbf{New York University}, New York, New York \hfill 2023--Now}
+\begin{itemize}
+	\item Ph.D., Department of Linguistics
+	\item Advised by Jane Maple
+\end{itemize}
+
+\subsection*{\textbf{University of Appleton}, Appleton, Connecticut \hfill 2019--2023}
+\begin{itemize}
+	\item B.A., Linguistics
+	\item Senior Thesis: \emph{From {*h₂ébl̥} to {ˈæp.ɫ̩}: the search for the perfect apple PIE.}
+\end{itemize}
+
+\section*{Journal Articles}
+\printbibliography[heading=none, type=article]
+
+\section*{Conference Papers}
+\printbibliography[heading=none, type=inproceedings]
+
+\section*{Teaching Experience}
+\subsection*{TA, \emph{Syntax I} (New York University) \hfill Spring 2024}
+\subsection*{TA, \emph{Historical Linguistics} (University of Appleton) \hfill Fall 2021}
+
+\section*{Departmental Service}
+\subsection*{Treasurer, Graduate Student Board (LANYU) \hfill 2023--2024}
+
+\end{document}
