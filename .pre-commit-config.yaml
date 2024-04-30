@@ -1,8 +1,4 @@
 repos:
-  - repo: https://github.com/cmhughes/latexindent.pl.git
-    rev: V3.23.1
-    hooks:
-      - id: latexindent
   - repo: https://github.com/jonasbb/pre-commit-latex-hooks
     rev: v1.4.0
     hooks:

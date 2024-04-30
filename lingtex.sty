@@ -263,16 +263,16 @@ sibling~distance=1.5\baselineskip,
 \ifPDFTeX
 	\str_case:VnF \l__lingtex_font_tl {
 		{ cochineal } {
-				\RequirePackage{cochineal}
-				\RequirePackage[varqu,varl,var0]{inconsolata}
-				\RequirePackage[scale=.95,type1]{cabin}
-				\RequirePackage[cochineal,vvarbb]{newtxmath}
-				\RequirePackage[cal=boondoxo]{mathalfa}
-			}
-			{ libertinus } { \RequirePackage{libertinus} }
-			{ lmodern } { \RequirePackage{lmodern} }
-			{ times } { \RequirePackage{mathptmx} }
-			{} {}
+            \RequirePackage{cochineal}
+            \RequirePackage[varqu,varl,var0]{inconsolata}
+            \RequirePackage[scale=.95,type1]{cabin}
+            \RequirePackage[cochineal,vvarbb]{newtxmath}
+            \RequirePackage[cal=boondoxo]{mathalfa}
+        }
+        { libertinus } { \RequirePackage{libertinus} }
+        { lmodern } { \RequirePackage{lmodern} }
+        { times } { \RequirePackage{mathptmx} }
+        {} {}
 	}{
 		\PackageError{lingtex}{Unknown~font~‘\l__lingtex_font_tl’}{}
 	}
@@ -298,30 +298,33 @@ sibling~distance=1.5\baselineskip,
 		% unicode-math redefines \gla at document start, we redefine it back
 		{ expex } { \let\oldgla\gla }}
 	\str_case:VnF \l__lingtex_font_tl {
+        { cochineal } {
+            \usepackage{cochineal}
+        }
 		{ libertinus } {
-				\RequirePackage[libertinus]{fontsetup}
-				\let\ipafont\rmfamily
-			}
-			{ lmodern } {
-				% I have no idea why this is necessary, but for some reason
-				% *only* the `default` option (loading New Computer Modern)
-				% causes a conflict with `tipauni`.
-				\let\oldtextipa\textipa
-				\let\textipa\relax
-				\RequirePackage[default]{fontsetup}
-				\let\textipa\oldtextipa
-				\let\ipafont\rmfamily
-			}
-			{ times } {
-				% \RequirePackage[times]{fontsetup}
-				% \RequirePackage[nomath]{fontspec}
-				\setmainfont{TeX Gyre Termes}
-				\RequirePackage{unicode-math}
-				\setmathfont{XITS Math}
-				\newfontfamily\doulos{Doulos SIL}[Scale=MatchLowercase]
-				\let\ipafont\doulos
-			}
-			{} {\let\ipafont\rmfamily}
+            \RequirePackage[libertinus]{fontsetup}
+            \let\ipafont\rmfamily
+        }
+        { lmodern } {
+            % I have no idea why this is necessary, but for some reason
+            % *only* the `default` option (loading New Computer Modern)
+            % causes a conflict with `tipauni`.
+            \let\oldtextipa\textipa
+            \let\textipa\relax
+            \RequirePackage[default]{fontsetup}
+            \let\textipa\oldtextipa
+            \let\ipafont\rmfamily
+        }
+        { times } {
+            % \RequirePackage[times]{fontsetup}
+            % \RequirePackage[nomath]{fontspec}
+            \setmainfont{TeX Gyre Termes}
+            \RequirePackage{unicode-math}
+            \setmathfont{XITS Math}
+            \newfontfamily\doulos{Doulos SIL}[Scale=MatchLowercase]
+            \let\ipafont\doulos
+        }
+        {} {\let\ipafont\rmfamily}
 	}{
 		\PackageError{lingtex}{Unknown~font~‘\l__lingtex_font_tl’}{}
 	}
