@@ -299,6 +299,10 @@ sibling~distance=1.5\baselineskip,
 		{ expex } { \let\oldgla\gla }}
 	\str_case:VnF \l__lingtex_font_tl {
         { cochineal } {
+            % We need to load the non-otf cochineal fonts
+            % via newtx in order to get \mathrm to use them.
+            \usepackage[cochineal,vvarbb]{newtx}
+            \usepackage[cal=boondoxo]{mathalfa}
             \usepackage{cochineal}
         }
 		{ libertinus } {
